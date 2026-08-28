@@ -8,7 +8,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout project
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Java
@@ -17,20 +17,24 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Build project
+      - name: Build
         run: mvn clean package
 
       - name: Create JAR
         run: |
           jar cfe HealthFirstPIMS.jar Login -C target/classes .
 
-      - name: Create Windows EXE
+      - name: Create EXE
         run: |
           mkdir output
           jpackage --type exe --name KimberleeNaidu_pims --input . --main-jar HealthFirstPIMS.jar --main-class Login --dest output --win-console
 
-      - name: Upload Windows EXE
+      - name: Check EXE
+        run: dir output
+
+      - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
           name: KimberleeNaidu_pims
           path: output/KimberleeNaidu_pims.exe
+          if-no-files-found: error
